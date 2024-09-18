@@ -2,7 +2,6 @@ import pygame
 import random
 import sys
 
-# ... (之前的代码保持不变)
 # 初始化 Pygame
 pygame.init()
 
@@ -53,14 +52,13 @@ BUTTON_TEXT = "Start"
 score = 0
 # 定义难度级别和对应的图案数量
 DIFFICULTIES = {
-    'easy': 2,
+    'easy': 3,
     'medium': 5,
-    'hard': 7
+    'hard': 6
 }
 
 # 初始化难度级别
 difficulty = 'easy'  # 默认难度为easy
-
 
 # 加载图案图片
 def load_patterns(difficulty):
@@ -72,7 +70,6 @@ def load_patterns(difficulty):
 
 patterns = load_patterns(difficulty)
 
-# ... (之前的代码保持不变，直到显示开始画面的函数)
 def draw_board():
     for row in range(ROWS):
         for col in range(COLS):
@@ -80,13 +77,10 @@ def draw_board():
             if tile is not None:
                 screen.blit(tile, (col * TILE_SIZE, row * TILE_SIZE))
 
-
 def draw_timer(time_left):
     timer_text = font.render(f"Time Left: {int(time_left):02d}", True, (255, 0, 0))
     timer_rect = timer_text.get_rect(center=(WIDTH // 2, HEIGHT - timer_text.get_height() - 10))
     screen.blit(timer_text, timer_rect)
-
-
 def game_over_screen(final_score):
     screen.blit(end_screen_img, (0, 0))
     final_score_text = font.render(f"Game Over\nScore: {final_score}", True, (255, 255, 255))
@@ -95,7 +89,6 @@ def game_over_screen(final_score):
     pygame.display.flip()
     pygame.time.wait(2000)
 
-
 def win_screen(final_score):
     screen.blit(end_screen_img, (0, 0))
     win_score_text = font.render(f"You Win!\nScore: {final_score}", True, (255, 255, 255))
@@ -103,8 +96,6 @@ def win_screen(final_score):
     screen.blit(win_score_text, win_score_rect)
     pygame.display.flip()
     pygame.time.wait(2000)
-
-
 def check_match():
     global score  # 声明score为全局变量
     if len(selected) == 2:
@@ -117,26 +108,19 @@ def check_match():
         selected.clear()
 
     # ... (显示分数的函数)
-
-
 def draw_score(score):
     score_text = font.render(f"Score: {score}", True, (255, 0, 0))
     score_rect = score_text.get_rect(center=(WIDTH // 2, 10))  # 放置在窗口顶部中央
     screen.blit(score_text, score_rect)
-
-
 def is_game_won():
     for row in board:
         for tile in row:
             if tile is not None:
                 return False
     return True
-
-
 font = pygame.font.Font(None, 36)  # 假设你已经定义了这个字体
-
-
 def show_difficulty_screen():
+    global difficulty
     screen.fill(BG_COLOR)
 
     # 显示难度选择
@@ -161,6 +145,9 @@ def show_difficulty_screen():
     pygame.display.flip()
 
     # 等待按钮点击
+    # ...（之前的代码保持不变）
+
+    # 等待按钮点击
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -168,15 +155,15 @@ def show_difficulty_screen():
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                y_offset = 200  # 重置y_offset
+                button_y = 200  # 初始y坐标，与绘制时一致
                 for diff, color in zip(difficulties, button_colors):
+                    # 检查鼠标是否在当前按钮的范围内
                     if BUTTON_X - BUTTON_WIDTH // 2 <= x <= BUTTON_X + BUTTON_WIDTH // 2:
-                        if y_offset - BUTTON_HEIGHT // 2 <= y <= y_offset + BUTTON_HEIGHT // 2:
-                            return diff  # 直接返回难度级别
-                    y_offset += BUTTON_HEIGHT + 20
-
-        pygame.display.flip()
-
+                        if button_y - BUTTON_HEIGHT // 2 <= y <= button_y + BUTTON_HEIGHT // 2:
+                            difficulty = diff  # 设置难度级别
+                            return  # 直接返回
+                    # 更新到下一个按钮的y坐标
+                    button_y += BUTTON_HEIGHT + 20
 def show_start_screen():
     screen.fill(BG_COLOR)
     screen.blit(start_screen_img, (0, 0))
@@ -231,7 +218,6 @@ patterns = load_patterns(difficulty)
 
 # 初始化游戏板
 board = [[random.choice(patterns) for _ in range(COLS)] for _ in range(ROWS)]
-# ... (之后的代码保持不变，游戏循环开始)
 while running:
     clock.tick(FPS)
 
